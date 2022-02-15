@@ -12,8 +12,9 @@ import Divider from "@mui/material/Divider";
 import { useSelector, useDispatch } from "react-redux";
 import { selectUsers, fetchUsers } from "./userSlice";
 
-export default function UserList() {
+export default function UserList(props) {
   const users = useSelector(selectUsers);
+  const setPanelState = props.setPanelState;
 
   const dispatch = useDispatch();
   React.useEffect(() => {
@@ -36,44 +37,47 @@ export default function UserList() {
           Add new
         </Button>
       </Box>
-      <Divider sx={{my: 2}}/>
+      <Divider sx={{ my: 2 }} />
 
-      {/* <Paper elevation={1} sx={{ p: 2, border: 1 }}> */}
-        <Table size="medium" sx={{ border: 1 }}>
-          <TableHead>
-            <TableRow>
-              <TableCell>Id</TableCell>
-              <TableCell>Name</TableCell>
-              <TableCell>Username</TableCell>
-              <TableCell>City</TableCell>
-              <TableCell>Email</TableCell>
-              <TableCell>Edit</TableCell>
-              <TableCell>Delete</TableCell>
+      <Table size="medium" sx={{ border: 1 }}>
+        <TableHead>
+          <TableRow>
+            <TableCell>Id</TableCell>
+            <TableCell>Name</TableCell>
+            <TableCell>Username</TableCell>
+            <TableCell>City</TableCell>
+            <TableCell>Email</TableCell>
+            <TableCell>Edit</TableCell>
+            <TableCell>Delete</TableCell>
+          </TableRow>
+        </TableHead>
+        <TableBody>
+          {users.map((user) => (
+            <TableRow key={user.id}>
+              <TableCell>{user.id}</TableCell>
+              <TableCell>{user.name}</TableCell>
+              <TableCell>{user.username}</TableCell>
+              <TableCell>{user.address.city}</TableCell>
+              <TableCell>{user.email}</TableCell>
+              <TableCell>
+                <Button
+                  variant="contained"
+                  size="small"
+                  color="warning"
+                  onClick={() => setPanelState({mode: "edit", user})}
+                >
+                  Edit
+                </Button>
+              </TableCell>
+              <TableCell>
+                <Button variant="contained" size="small" color="error">
+                  Delete
+                </Button>
+              </TableCell>
             </TableRow>
-          </TableHead>
-          <TableBody>
-            {users.map((user) => (
-              <TableRow key={user.id}>
-                <TableCell>{user.id}</TableCell>
-                <TableCell>{user.name}</TableCell>
-                <TableCell>{user.username}</TableCell>
-                <TableCell>{user.address.city}</TableCell>
-                <TableCell>{user.email}</TableCell>
-                <TableCell>
-                  <Button variant="contained" size="small" color="warning">
-                    Edit
-                  </Button>
-                </TableCell>
-                <TableCell>
-                  <Button variant="contained" size="small" color="error">
-                    Delete
-                  </Button>
-                </TableCell>
-              </TableRow>
-            ))}
-          </TableBody>
-        </Table>
-      {/* </Paper> */}
+          ))}
+        </TableBody>
+      </Table>
     </Paper>
   );
 }

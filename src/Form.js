@@ -7,7 +7,10 @@ import Divider from "@mui/material/Divider";
 import TextField from "@mui/material/TextField";
 import Grid from "@mui/material/Grid";
 
-export default function Form() {
+export default function Form(props) {
+  const panelState = props.panelState;
+  const setPanelState = props.setPanelState;
+
   return (
     <Paper elevation={3} sx={{ px: 1, py: 2 }}>
       <Box
@@ -24,18 +27,26 @@ export default function Form() {
       <Divider />
 
       <Box sx={{ py: 4, mx: 4 }}>
-        <Grid container spacing={4} sx={{ alignItems: "center"}}>
-          <Grid item xs={2} >
+        <Grid container spacing={4} sx={{ alignItems: "center" }}>
+          <Grid item xs={2}>
             <Typography variant="h6">Name</Typography>
           </Grid>
           <Grid item xs={10}>
-            <TextField sx={{ width: "100%" }} size="small"/>
+            <TextField
+              sx={{ width: "100%" }}
+              size="small"
+              value={panelState.user.name}
+            />
           </Grid>
           <Grid item xs={2}>
             <Typography variant="h6">Email</Typography>
           </Grid>
           <Grid item xs={10}>
-            <TextField sx={{ width: "100%" }}size="small" />
+            <TextField
+              sx={{ width: "100%" }}
+              size="small"
+              value={panelState.user.email}
+            />
           </Grid>
         </Grid>
       </Box>
@@ -47,7 +58,11 @@ export default function Form() {
           mr: 6,
         }}
       >
-        <Button variant="outlined" sx={{ mr: 2 }}>
+        <Button
+          variant="outlined"
+          sx={{ mr: 2 }}
+          onClick={() => setPanelState({ mode: "view" })}
+        >
           Cancel
         </Button>
         <Button variant="contained">Submit</Button>

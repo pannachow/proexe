@@ -6,20 +6,22 @@ import UserList from "./UserList";
 import Form from "./Form";
 
 export default function Dashboard() {
+  const [panelState, setPanelState] = React.useState({
+    mode: "view",
+  });
+
   return (
     <React.Fragment>
       <CssBaseline />
       <Container>
-        <Typography
-          variant="h3"
-          align="left"
-          gutterBottom
-          sx={{ pt: 2 }}
-        >
+        <Typography variant="h3" align="left" gutterBottom sx={{ pt: 2 }}>
           Dashboard
         </Typography>
-        <UserList />
-        <Form />
+        {panelState.mode === "view" ? (
+          <UserList setPanelState={setPanelState} />
+        ) : (
+          <Form panelState={panelState} setPanelState={setPanelState} />
+        )}
       </Container>
     </React.Fragment>
   );
