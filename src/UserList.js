@@ -1,4 +1,5 @@
 import * as React from "react";
+import Link from "@mui/material/Link";
 import Table from "@mui/material/Table";
 import TableBody from "@mui/material/TableBody";
 import TableCell from "@mui/material/TableCell";
@@ -15,11 +16,37 @@ import { selectUsers, fetchUsers } from "./userSlice";
 export default function UserList(props) {
   const users = useSelector(selectUsers);
   const setPanelState = props.setPanelState;
+  const [sorting, setSorting] = React.useState({
+    by: null,
+    ascending: true,
+  });
 
   const dispatch = useDispatch();
   React.useEffect(() => {
     dispatch(fetchUsers());
   }, [dispatch]);
+
+  function updateSorting(by) {
+    setSorting({
+      by,
+      // if user tries to sort by already sorted column, reverse the sorting direction
+      ascending: by === sorting.by ? !sorting.ascending : true,
+    });
+  }
+
+  const sortedUsers = sorting.by
+    ? [...users].sort((a, b) => {
+        if (!sorting.ascending) {
+          [b, a] = [a, b];
+        }
+        return accessObject(a, sorting.by)
+          .toString()
+          .localeCompare(accessObject(b, sorting.by).toString(), "en", {
+            // enables sorting numeric values such as id correctly
+            numeric: true,
+          });
+      })
+    : users;
 
   return (
     <Paper elevation={3} sx={{ px: 1, py: 2 }}>
@@ -42,17 +69,37 @@ export default function UserList(props) {
       <Table size="medium" sx={{ border: 1 }}>
         <TableHead>
           <TableRow>
-            <TableCell>Id</TableCell>
-            <TableCell>Name</TableCell>
-            <TableCell>Username</TableCell>
-            <TableCell>City</TableCell>
-            <TableCell>Email</TableCell>
+            <TableCell>
+              <Link href="#" onClick={() => updateSorting("id")}>
+                Id
+              </Link>
+            </TableCell>
+            <TableCell>
+              <Link href="#" onClick={() => updateSorting("name")}>
+                Name
+              </Link>
+            </TableCell>
+            <TableCell>
+              <Link href="#" onClick={() => updateSorting("username")}>
+                Username
+              </Link>
+            </TableCell>
+            <TableCell>
+              <Link href="#" onClick={() => updateSorting("address.city")}>
+                City
+              </Link>
+            </TableCell>
+            <TableCell>
+              <Link href="#" onClick={() => updateSorting("email")}>
+                Email
+              </Link>
+            </TableCell>
             <TableCell>Edit</TableCell>
             <TableCell>Delete</TableCell>
           </TableRow>
         </TableHead>
         <TableBody>
-          {users.map((user) => (
+          {sortedUsers.map((user) => (
             <TableRow key={user.id}>
               <TableCell>{user.id}</TableCell>
               <TableCell>{user.name}</TableCell>
@@ -64,7 +111,7 @@ export default function UserList(props) {
                   variant="contained"
                   size="small"
                   color="warning"
-                  onClick={() => setPanelState({mode: "edit", user})}
+                  onClick={() => setPanelState({ mode: "edit", user })}
                 >
                   Edit
                 </Button>
@@ -80,4 +127,12 @@ export default function UserList(props) {
       </Table>
     </Paper>
   );
+}
+
+function accessObject(obj, key) {
+  // access object with a nested key such as "address.city"
+  for (const field of key.split(".")) {
+    obj = obj[field];
+  }
+  return obj;
 }
