@@ -11,20 +11,21 @@ import Button from "@mui/material/Button";
 import Typography from "@mui/material/Typography";
 import Divider from "@mui/material/Divider";
 import { useSelector, useDispatch } from "react-redux";
-import { selectUsers, fetchUsers, deleteUser } from "./userSlice";
+import {
+  selectUsers,
+  deleteUser,
+  beginAddUser,
+  beginEditUser,
+} from "./userSlice";
 
-export default function UserList(props) {
+export default function UserList() {
   const users = useSelector(selectUsers);
-  const setPanelState = props.setPanelState;
   const [sorting, setSorting] = React.useState({
     by: null,
     ascending: true,
   });
 
   const dispatch = useDispatch();
-  React.useEffect(() => {
-    dispatch(fetchUsers());
-  }, [dispatch]);
 
   function updateSorting(by) {
     setSorting({
@@ -63,26 +64,14 @@ export default function UserList(props) {
         <Button
           variant="contained"
           size="small"
-          onClick={() =>
-            setPanelState({
-              mode: "add",
-              user: {
-                name: "",
-                username: "",
-                email: "",
-                address: {
-                  city: "",
-                },
-              },
-            })
-          }
+          onClick={() => dispatch(beginAddUser())}
         >
           Add new
         </Button>
       </Box>
       <Divider sx={{ my: 2 }} />
 
-      <Table size="medium" sx={{ border: 1 }}>
+      <Table size="medium" sx={{ border: "1px solid rgba(0, 0, 0, 0.12)" }}>
         <TableHead>
           <TableRow>
             <TableCell>
@@ -127,7 +116,7 @@ export default function UserList(props) {
                   variant="contained"
                   size="small"
                   color="warning"
-                  onClick={() => setPanelState({ mode: "edit", user })}
+                  onClick={() => dispatch(beginEditUser(user))}
                 >
                   Edit
                 </Button>

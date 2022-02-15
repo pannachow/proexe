@@ -1,12 +1,6 @@
-import React from 'react';
-import Dashboard from './Dashboard';
+import React from "react";
+import Dashboard from "./features/user/Dashboard";
 
-function App() {
-  return (
-    <div className="App">
-      <Dashboard />
-    </div>
-  );
+export default function App() {
+  return <Dashboard />;
 }
-
-export default App;

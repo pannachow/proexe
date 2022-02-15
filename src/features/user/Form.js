@@ -6,12 +6,16 @@ import Typography from "@mui/material/Typography";
 import Divider from "@mui/material/Divider";
 import TextField from "@mui/material/TextField";
 import Grid from "@mui/material/Grid";
-import { addUser, editUser } from "./userSlice";
-import { useDispatch } from "react-redux";
+import {
+  selectPanelState,
+  cancelUserAction,
+  addUser,
+  editUser,
+} from "./userSlice";
+import { useDispatch, useSelector } from "react-redux";
 
-export default function Form(props) {
-  const panelState = props.panelState;
-  const setPanelState = props.setPanelState;
+export default function Form() {
+  const panelState = useSelector(selectPanelState);
   const dispatch = useDispatch();
 
   const nameRef = React.useRef();
@@ -41,10 +45,13 @@ export default function Form(props) {
           </Grid>
           <Grid item xs={10}>
             <TextField
+              error={Boolean(panelState.errors.name)}
+              helperText={panelState.errors.name}
               sx={{ width: "100%" }}
               size="small"
-              value={panelState.user.name}
-              ref={nameRef}
+              defaultValue={panelState.user.name}
+              inputRef={nameRef}
+              required
             />
           </Grid>
           <Grid item xs={2}>
@@ -52,10 +59,13 @@ export default function Form(props) {
           </Grid>
           <Grid item xs={10}>
             <TextField
+              error={Boolean(panelState.errors.username)}
+              helperText={panelState.errors.username}
               sx={{ width: "100%" }}
               size="small"
-              value={panelState.user.username}
-              ref={usernameRef}
+              defaultValue={panelState.user.username}
+              inputRef={usernameRef}
+              required
             />
           </Grid>
           <Grid item xs={2}>
@@ -63,10 +73,13 @@ export default function Form(props) {
           </Grid>
           <Grid item xs={10}>
             <TextField
+              error={Boolean(panelState.errors.email)}
+              helperText={panelState.errors.email}
               sx={{ width: "100%" }}
               size="small"
-              value={panelState.user.email}
-              ref={emailRef}
+              defaultValue={panelState.user.email}
+              inputRef={emailRef}
+              required
             />
           </Grid>
           <Grid item xs={2}>
@@ -74,10 +87,13 @@ export default function Form(props) {
           </Grid>
           <Grid item xs={10}>
             <TextField
+              error={Boolean(panelState.errors.city)}
+              helperText={panelState.errors.city}
               sx={{ width: "100%" }}
               size="small"
-              value={panelState.user.address.city}
-              ref={cityRef}
+              defaultValue={panelState.user.address.city}
+              inputRef={cityRef}
+              required
             />
           </Grid>
         </Grid>
@@ -93,25 +109,27 @@ export default function Form(props) {
         <Button
           variant="outlined"
           sx={{ mr: 2 }}
-          onClick={() => setPanelState({ mode: "view" })}
+          onClick={() => dispatch(cancelUserAction())}
         >
           Cancel
         </Button>
         <Button
           variant="contained"
-          // onClick={() => {
-          //   const payload = {
-          //     name: nameRef.current.value,
-          //     username: usernameRef.current.value,
-          //     email: emailRef.current.value,
-          //     city: cityRef.current.value,
-          //   };
-          //   dispatch(
-          //     panelState.mode === "add"
-          //       ? addUser(payload)
-          //       : editUser({ id: panelState.user.id, ...payload })
-          //   );
-          // }}
+          onClick={() => {
+            const payload = {
+              name: nameRef.current.value,
+              username: usernameRef.current.value,
+              email: emailRef.current.value,
+              address: {
+                city: cityRef.current.value,
+              },
+            };
+            dispatch(
+              panelState.mode === "add"
+                ? addUser(payload)
+                : editUser({ id: panelState.user.id, ...payload })
+            );
+          }}
         >
           Submit
         </Button>

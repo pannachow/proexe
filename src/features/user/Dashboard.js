@@ -4,11 +4,17 @@ import Container from "@mui/material/Container";
 import Typography from "@mui/material/Typography";
 import UserList from "./UserList";
 import Form from "./Form";
+import { useDispatch, useSelector } from "react-redux";
+import { fetchUsers, selectPanelState } from "./userSlice";
 
 export default function Dashboard() {
-  const [panelState, setPanelState] = React.useState({
-    mode: "view",
-  });
+  const panelState = useSelector(selectPanelState);
+
+  const dispatch = useDispatch();
+
+  if (panelState.mode === "loading") {
+    dispatch(fetchUsers());
+  }
 
   return (
     <React.Fragment>
@@ -18,9 +24,9 @@ export default function Dashboard() {
           Dashboard
         </Typography>
         {panelState.mode === "view" ? (
-          <UserList setPanelState={setPanelState} />
+          <UserList />
         ) : (
-          <Form panelState={panelState} setPanelState={setPanelState} />
+          ["add", "edit"].includes(panelState.mode) && <Form />
         )}
       </Container>
     </React.Fragment>
