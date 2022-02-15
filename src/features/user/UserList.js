@@ -13,12 +13,15 @@ import Divider from "@mui/material/Divider";
 import { useSelector, useDispatch } from "react-redux";
 import {
   selectUsers,
-  deleteUser,
   beginAddUser,
   beginEditUser,
 } from "./userSlice";
+import DeleteModal from "./DeleteModal";
 
 export default function UserList() {
+  const [deleteModal, setDeleteModal] = React.useState({
+    open: false,
+  });
   const users = useSelector(selectUsers);
   const [sorting, setSorting] = React.useState({
     by: null,
@@ -50,92 +53,100 @@ export default function UserList() {
     : users;
 
   return (
-    <Paper elevation={3} sx={{ px: 1, py: 2 }}>
-      <Box
-        sx={{
-          display: "flex",
-          flexWrap: "wrap",
-          justifyContent: "space-between",
-          mb: 2,
-          mx: 1,
-        }}
-      >
-        <Typography variant="h6">User List</Typography>
-        <Button
-          variant="contained"
-          size="small"
-          onClick={() => dispatch(beginAddUser())}
+    <>
+      <Paper elevation={3} sx={{ px: 1, py: 2 }}>
+        <Box
+          sx={{
+            display: "flex",
+            flexWrap: "wrap",
+            justifyContent: "space-between",
+            mb: 2,
+            mx: 1,
+          }}
         >
-          Add new
-        </Button>
-      </Box>
-      <Divider sx={{ my: 2 }} />
+          <Typography variant="h6">User List</Typography>
+          <Button
+            variant="contained"
+            size="small"
+            onClick={() => dispatch(beginAddUser())}
+          >
+            Add new
+          </Button>
+        </Box>
+        <Divider sx={{ my: 2 }} />
 
-      <Table size="medium" sx={{ border: "1px solid rgba(0, 0, 0, 0.12)" }}>
-        <TableHead>
-          <TableRow>
-            <TableCell>
-              <Link href="#" onClick={() => updateSorting("id")}>
-                Id
-              </Link>
-            </TableCell>
-            <TableCell>
-              <Link href="#" onClick={() => updateSorting("name")}>
-                Name
-              </Link>
-            </TableCell>
-            <TableCell>
-              <Link href="#" onClick={() => updateSorting("username")}>
-                Username
-              </Link>
-            </TableCell>
-            <TableCell>
-              <Link href="#" onClick={() => updateSorting("address.city")}>
-                City
-              </Link>
-            </TableCell>
-            <TableCell>
-              <Link href="#" onClick={() => updateSorting("email")}>
-                Email
-              </Link>
-            </TableCell>
-            <TableCell>Edit</TableCell>
-            <TableCell>Delete</TableCell>
-          </TableRow>
-        </TableHead>
-        <TableBody>
-          {sortedUsers.map((user) => (
-            <TableRow key={user.id}>
-              <TableCell>{user.id}</TableCell>
-              <TableCell>{user.name}</TableCell>
-              <TableCell>{user.username}</TableCell>
-              <TableCell>{user.address.city}</TableCell>
-              <TableCell>{user.email}</TableCell>
+        <Table size="medium" sx={{ border: "1px solid rgba(0, 0, 0, 0.12)" }}>
+          <TableHead>
+            <TableRow>
               <TableCell>
-                <Button
-                  variant="contained"
-                  size="small"
-                  color="warning"
-                  onClick={() => dispatch(beginEditUser(user))}
-                >
-                  Edit
-                </Button>
+                <Link href="#" onClick={() => updateSorting("id")}>
+                  Id
+                </Link>
               </TableCell>
               <TableCell>
-                <Button
-                  variant="contained"
-                  size="small"
-                  color="error"
-                  onClick={() => dispatch(deleteUser(user))}
-                >
-                  Delete
-                </Button>
+                <Link href="#" onClick={() => updateSorting("name")}>
+                  Name
+                </Link>
               </TableCell>
+              <TableCell>
+                <Link href="#" onClick={() => updateSorting("username")}>
+                  Username
+                </Link>
+              </TableCell>
+              <TableCell>
+                <Link href="#" onClick={() => updateSorting("address.city")}>
+                  City
+                </Link>
+              </TableCell>
+              <TableCell>
+                <Link href="#" onClick={() => updateSorting("email")}>
+                  Email
+                </Link>
+              </TableCell>
+              <TableCell>Edit</TableCell>
+              <TableCell>Delete</TableCell>
             </TableRow>
-          ))}
-        </TableBody>
-      </Table>
-    </Paper>
+          </TableHead>
+          <TableBody>
+            {sortedUsers.map((user) => (
+              <TableRow key={user.id}>
+                <TableCell>{user.id}</TableCell>
+                <TableCell>{user.name}</TableCell>
+                <TableCell>{user.username}</TableCell>
+                <TableCell>{user.address.city}</TableCell>
+                <TableCell>{user.email}</TableCell>
+                <TableCell>
+                  <Button
+                    variant="contained"
+                    size="small"
+                    color="warning"
+                    onClick={() => dispatch(beginEditUser(user))}
+                  >
+                    Edit
+                  </Button>
+                </TableCell>
+                <TableCell>
+                  <Button
+                    variant="contained"
+                    size="small"
+                    color="error"
+                    onClick={() => setDeleteModal({ open: true, user })}
+                  >
+                    Delete
+                  </Button>
+                </TableCell>
+              </TableRow>
+            ))}
+          </TableBody>
+        </Table>
+      </Paper>
+
+      <DeleteModal
+        open={deleteModal.open}
+        close={() => setDeleteModal({ open: false })}
+        user={deleteModal.user}
+      />
+    </>
   );
 }
 

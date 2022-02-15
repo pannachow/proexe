@@ -89,7 +89,6 @@ export const userSlice = createSlice({
         };
       })
       .addCase(addUser.rejected, (state, action) => {
-        console.log(action);
         state.panelState.errors = action.payload;
       })
       .addCase(editUser.fulfilled, (state, action) => {
