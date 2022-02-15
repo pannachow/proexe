@@ -11,7 +11,7 @@ import Button from "@mui/material/Button";
 import Typography from "@mui/material/Typography";
 import Divider from "@mui/material/Divider";
 import { useSelector, useDispatch } from "react-redux";
-import { selectUsers, fetchUsers } from "./userSlice";
+import { selectUsers, fetchUsers, deleteUser } from "./userSlice";
 
 export default function UserList(props) {
   const users = useSelector(selectUsers);
@@ -60,7 +60,23 @@ export default function UserList(props) {
         }}
       >
         <Typography variant="h6">User List</Typography>
-        <Button variant="contained" size="small">
+        <Button
+          variant="contained"
+          size="small"
+          onClick={() =>
+            setPanelState({
+              mode: "add",
+              user: {
+                name: "",
+                username: "",
+                email: "",
+                address: {
+                  city: "",
+                },
+              },
+            })
+          }
+        >
           Add new
         </Button>
       </Box>
@@ -117,7 +133,12 @@ export default function UserList(props) {
                 </Button>
               </TableCell>
               <TableCell>
-                <Button variant="contained" size="small" color="error">
+                <Button
+                  variant="contained"
+                  size="small"
+                  color="error"
+                  onClick={() => dispatch(deleteUser(user))}
+                >
                   Delete
                 </Button>
               </TableCell>

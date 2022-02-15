@@ -6,10 +6,18 @@ import Typography from "@mui/material/Typography";
 import Divider from "@mui/material/Divider";
 import TextField from "@mui/material/TextField";
 import Grid from "@mui/material/Grid";
+import { addUser, editUser } from "./userSlice";
+import { useDispatch } from "react-redux";
 
 export default function Form(props) {
   const panelState = props.panelState;
   const setPanelState = props.setPanelState;
+  const dispatch = useDispatch();
+
+  const nameRef = React.useRef();
+  const usernameRef = React.useRef();
+  const emailRef = React.useRef();
+  const cityRef = React.useRef();
 
   return (
     <Paper elevation={3} sx={{ px: 1, py: 2 }}>
@@ -36,6 +44,18 @@ export default function Form(props) {
               sx={{ width: "100%" }}
               size="small"
               value={panelState.user.name}
+              ref={nameRef}
+            />
+          </Grid>
+          <Grid item xs={2}>
+            <Typography variant="h6">Username</Typography>
+          </Grid>
+          <Grid item xs={10}>
+            <TextField
+              sx={{ width: "100%" }}
+              size="small"
+              value={panelState.user.username}
+              ref={usernameRef}
             />
           </Grid>
           <Grid item xs={2}>
@@ -46,6 +66,18 @@ export default function Form(props) {
               sx={{ width: "100%" }}
               size="small"
               value={panelState.user.email}
+              ref={emailRef}
+            />
+          </Grid>
+          <Grid item xs={2}>
+            <Typography variant="h6">City</Typography>
+          </Grid>
+          <Grid item xs={10}>
+            <TextField
+              sx={{ width: "100%" }}
+              size="small"
+              value={panelState.user.address.city}
+              ref={cityRef}
             />
           </Grid>
         </Grid>
@@ -65,7 +97,24 @@ export default function Form(props) {
         >
           Cancel
         </Button>
-        <Button variant="contained">Submit</Button>
+        <Button
+          variant="contained"
+          // onClick={() => {
+          //   const payload = {
+          //     name: nameRef.current.value,
+          //     username: usernameRef.current.value,
+          //     email: emailRef.current.value,
+          //     city: cityRef.current.value,
+          //   };
+          //   dispatch(
+          //     panelState.mode === "add"
+          //       ? addUser(payload)
+          //       : editUser({ id: panelState.user.id, ...payload })
+          //   );
+          // }}
+        >
+          Submit
+        </Button>
       </Box>
     </Paper>
   );
